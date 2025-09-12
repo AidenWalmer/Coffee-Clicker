@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (brewBtn) {
         brewBtn.addEventListener('click', clickBrewButton);
         // Add hover tip to coffee clicker button
-        brewBtn.addEventListener('mouseenter', function() {
+        brewBtn.addEventListener('mouseenter', function () {
             brewBtn.title = `Total Coffees Collected: ${totalCoffeesCollected}`;
         });
     }
@@ -501,11 +501,13 @@ const achievements = [
     { id: 'all-upgrades', condition: () => upgrades.every(u => u.owned >= 1), message: 'Achievement: Purchase one of Every Upgrade!' },
     { id: 'all-shop-items', condition: () => shopUpgrades.every(u => u.owned >= 1), message: 'Achievement: Purchase one of Every Shop Item!' },
     { id: 'all-items', condition: () => upgrades.every(u => u.owned >= 1) && shopUpgrades.every(u => u.owned >= 1), message: 'Achievement: I\'ll Have One of Everything! (All Upgrades & Shop Items)' },
-    { id: 'completionist', condition: () => {
-        // Exclude this achievement itself from the check
-        const otherAchievements = achievements.filter(a => a.id !== 'completionist');
-        return otherAchievements.every(a => unlockedAchievements.has(a.id));
-    }, message: 'Achievement: The Coffee Completionist (All Achievements Unlocked!)' },
+    {
+        id: 'completionist', condition: () => {
+            // Exclude this achievement itself from the check
+            const otherAchievements = achievements.filter(a => a.id !== 'completionist');
+            return otherAchievements.every(a => unlockedAchievements.has(a.id));
+        }, message: 'Achievement: The Coffee Completionist (All Achievements Unlocked!)'
+    },
     // First of any upgrade
     ...upgrades.map((u, i) => ({ id: `first-upgrade-${i}`, condition: () => u.owned >= 1, message: `Achievement: First ${u.name}!` })),
     // First of any shop item
@@ -575,9 +577,6 @@ function checkAchievements() {
 let bonusCoffeeActive = false;
 let bonusTimeout = null;
 
-// Add sound for bonus event
-const bonusAudio = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae3e2.mp3'); // Free chime sound
-
 function spawnBonusCoffee() {
     if (bonusCoffeeActive) return;
     bonusCoffeeActive = true;
@@ -610,8 +609,7 @@ function spawnBonusCoffee() {
         img.style.pointerEvents = 'none';
         img.style.margin = '0 auto';
     }
-    bonusAudio.currentTime = 0;
-    bonusAudio.play();
+
     // Remove after 8 seconds if not clicked
     bonusTimeout = setTimeout(() => {
         bonus.style.display = 'none';
@@ -620,7 +618,7 @@ function spawnBonusCoffee() {
     }, 8000);
 }
 
-document.getElementById('bonus-coffee').addEventListener('click', function() {
+document.getElementById('bonus-coffee').addEventListener('click', function () {
     if (!bonusCoffeeActive) return;
     // Award 25% of current coffeeCount (rounded down, at least 1)
     const bonusAmount = Math.max(1, Math.floor(coffeeCount * 0.25));
