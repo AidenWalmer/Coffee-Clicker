@@ -481,7 +481,7 @@ const achievements = [
     { id: 'first-click', condition: () => coffeeCount >= 1, message: 'Achievement: First Click!' },
     { id: 'hundred-clicks', condition: () => totalClicks >= 100, message: 'Achievement: 100 Clicks!' },
     { id: 'thousand-clicks', condition: () => totalClicks >= 1000, message: 'Achievement: 1,000 Clicks!' },
-    { id: 'ten-thousand-clicks', condition: () => totalClicks >= 10000, message: 'Achievement: 10,000 Clicks!' },
+    { id: 'five-thousand-clicks', condition: () => totalClicks >= 5000, message: 'Achievement: 5,000 Clicks!' },
     { id: 'first-sell', condition: () => window.firstSell, message: 'Achievement: First Sale! (Sold a Shop Item or Upgrade)' },
     { id: 'hundred-coffees', condition: () => coffeeCount >= 100, message: 'Achievement: 100 Coffees!' },
     { id: 'thousand-coffees', condition: () => coffeeCount >= 1000, message: 'Achievement: 1,000 Coffees!' },
