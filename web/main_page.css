@@ -1,0 +1,342 @@
+/* Restart Game button styling */
+#restart-game {
+    background: #4e2e0e;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    font-size: 0.98em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: background 0.2s, color 0.2s;
+}
+#restart-game:hover {
+    background: #2d1806;
+    color: #fff;
+}
+/* Shop panel styling */
+#shop_panel {
+    position: static;
+    margin: 40px auto 0 auto;
+    background: #f0e6d2;
+    border: 2px solid #bfa76a;
+    border-radius: 16px;
+    padding: 24px 18px;
+    z-index: 11;
+    min-width: 320px;
+    max-width: 400px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#shop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+}
+
+#buy-amount-controls, #shop-buy-amount-controls {
+    margin-bottom: 18px;
+}
+
+/* Upgrades panel styling */
+#upgrades_panel {
+    position: fixed;
+    top: 50%;
+    right: 0%;
+    left: auto;
+    transform: translateY(-50%);
+    background: #f0e6d2;
+    border: 2px solid #d4af37;
+    border-radius: 16px;
+    padding: 32px 24px;
+    z-index: 10;
+    min-width: 320px;
+    max-height: 800px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    overflow-y: auto;
+}
+
+#upgrades-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#upgrades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+}
+
+.upgrade-btn {
+    width: 220px;
+    padding: 6px 4px;
+    font-size: 0.85em;
+    border-radius: 6px;
+    border: 2px solid #bfa76a;
+    background: #fffbe6;
+    color: #6f4e37;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.upgrade-btn:disabled {
+    background: #e0e0e0;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.upgrade-btn:hover:not(:disabled) {
+    background: #ffe4b3;
+}
+
+.coffee-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* CSS for Coffee Clicker main page */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #e7d3b0;
+    margin: 0;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+#brew-button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#brew-button:focus {
+    outline: none;
+}
+
+#brew-button:hover {
+    /* background: radial-gradient(circle at 30% 30%, #7a4b2a, #5c3a2a); */
+    transform: scale(1.15);
+}
+
+#brew-button:active {
+    animation: pulsateBtn 0.25s linear;
+}
+
+@keyframes pulsateBtn {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25);}
+    100% { transform: scale(1); }
+}
+
+#clicker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-85%);
+    margin: 0;
+    background: none;
+    width: 260px;
+    height: 100vh;
+    z-index: 20;
+}
+
+.coffee-emoji {
+    font-size: 7em;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+#coffee-emoji {
+    font-size: 10em;
+    pointer-events: none;
+}
+
+#shop_panel h2, #upgrades_panel h2 {
+    margin-top: -5px;
+}
+
+#starter-msg {
+    font-size: 1em;
+    color: #42250e;
+    margin-top: -15px;
+    margin-bottom: 30px;
+}
+
+#coffee-count-display h3 {
+    margin-bottom: 10px;
+}
+
+#coffee-per-second {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    color: #b05e19 !important;
+}
+
+#coffee-count {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: -5px
+}
+
+.pulsate {
+    animation: pulsateH1 1s infinite alternate;
+    color: #4e2e13;
+    text-shadow: 0 0 8px #fffbe6, 0 0 16px #bfa76a;
+    margin-bottom: 18px;
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+}
+
+@keyframes pulsateH1 {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.15); opacity: 0.7; }
+}
+
+#click-me-msg {
+    position: absolute;
+    margin-top: 120%;
+    margin-left: -27%;
+    z-index: 2;
+}
+
+.active, .shop-mode-btn.active, .mode-btn.active, .buy-amount-btn.active, .shop-buy-amount-btn.active {
+    background: #998246 !important;
+    color: #fffbe6 !important;
+    border-color: #8b5e3c !important;
+    box-shadow: 0 2px 8px rgba(139, 94, 60, 0.18);
+}
+
+#logo-switcher-container {
+    position: fixed;
+    bottom: 215px;
+    left: 35%;
+    font-weight: bold;
+}
+
+/* Achievement popup styles */
+#achievement-popup {
+    position: fixed;
+    left: 50%;
+    bottom: -100px;
+    transform: translateX(-50%);
+    background: #e0fde0;
+    color: #6f4e37;
+    border: 2px solid #bfa76a;
+    border-radius: 12px;
+    padding: 18px 36px;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: bottom 0.5s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.3s;
+}
+
+#achievement-popup.show {
+    bottom: 22px;
+    opacity: 1;
+}
+
+/* Achievements dropdown menu */
+#achievements-dropdown {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 10000;
+    background: #fffbe6;
+    border: 2px solid #bfa76a;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    min-width: 220px;
+    max-width: 320px;
+    font-size: 1em;
+    color: #6f4e37;
+    padding: 0;
+    overflow: hidden;
+}
+#achievements-dropdown summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 12px 18px;
+    background: #f0e6d2;
+    border-bottom: 1px solid #bfa76a;
+    outline: none;
+    user-select: none;
+}
+#achievements-dropdown[open] summary {
+    border-bottom: 1px solid #bfa76a;
+}
+#achievements-dropdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 10px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    color:#4ab64e
+}
+
+#achievements-dropdown li {
+    padding: 8px 18px;
+    border-bottom: 1px solid #eee3c6;
+    font-size: 0.98em;
+}
+#achievements-dropdown li:last-child {
+    border-bottom: none;
+}
+
+#bonus-coffee {
+    transition: top 0.2s, left 0.2s, opacity 0.2s;
+    filter: drop-shadow(0 2px 12px #bfa76a);
+    opacity: 0.98;
+    pointer-events: auto;
+    user-select: none;
+    font-size: 5em !important;
+    text-shadow: 0 0 16px #fffbe7, 0 0 8px #bfa76a;
+}
+#bonus-coffee span {
+    pointer-events: none;
+    font-size: 2em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #4e2e0e !important;
+}

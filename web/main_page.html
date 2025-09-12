@@ -1,14 +1,119 @@
+<!-- HTML for Coffee Clicker main page -->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main_page.css">
+    <link rel="icon" type="image/png" href="icons/coffee-logo.png?v=2">
     <title>Coffee Clicker</title>
 </head>
+
 <body>
-    <h1>Coffee Clicker</h1>
-    <p>Click the button below to brew some delicious coffee.</p>
-    <button id="brew-button">Brew Coffee</button>
-    
+
+    <!-- Header Section -->
+    <div id="header">
+        <h1>☕ Coffee Clicker ☕</h1>
+        <p id="starter-msg">Click the button on your left to brew some delicious coffee.</p>
+    </div>
+
+    <!-- Coffee Count Display -->
+    <div id="coffee-count-display">
+        <h3 id="coffee-count">0 Coffees Brewed</h3>
+        <p id="coffee-per-second">Coffees per second: 0</p>
+        <div id="game-controls">
+            <button id="restart-game">Restart Game</button>
+        </div>
+    </div>
+
+    <!-- Shop panel for click upgrades -->
+    <div id="shop_panel">
+    <h2>☝🏻 Shop</h2>
+        <div id="shop-buy-amount-controls">
+            <label>Buy/Sell: </label>
+            <button id="shop-buy-mode" class="shop-mode-btn active" data-mode="buy">Buy</button>
+            <button id="shop-sell-mode" class="shop-mode-btn" data-mode="sell">Sell</button>
+            <span style="margin-left:12px;">Amount:</span>
+            <button class="shop-buy-amount-btn" data-amount="1">1</button>
+            <button class="shop-buy-amount-btn" data-amount="10">10</button>
+            <button class="shop-buy-amount-btn" data-amount="max">MAX</button>
+        </div>
+        <div id="shop-list">
+            <!-- Shop items will be added here -->
+        </div>
+    </div>
+
+    <!-- Upgrades panel -->
+    <div id="upgrades_panel">
+        <h2>🔨 Upgrades</h2>
+        <div id="upgrades-list-container">
+            <div id="buy-amount-controls">
+                <label>Buy/Sell: </label>
+                <button id="buy-mode" class="mode-btn active" data-mode="buy">Buy</button>
+                <button id="sell-mode" class="mode-btn" data-mode="sell">Sell</button>
+                <span style="margin-left:12px;">Amount:</span>
+                <button class="buy-amount-btn" data-amount="1">1</button>
+                <button class="buy-amount-btn" data-amount="10">10</button>
+                <button class="buy-amount-btn" data-amount="max">MAX</button>
+            </div>
+            <div id="upgrades-list">
+                <!-- Upgrade items will be added here -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Clicker Button Section -->
+    <div id="clicker">
+        <h1 id="click-me-msg" class="pulsate">Click Me!!</h1>
+
+        <button id="brew-button">
+            <img id="coffee-logo-img" src="icons/coffee-cup.png" alt="Coffee Cup" class="coffee-emoji" />
+        </button>
+        <div id="logo-switcher-container" style="display: flex; flex-direction: column; align-items: center; margin-top: 10px;">
+            <label for="logo-switcher" style="font-size: 0.95em; color: #6f4e37; margin-bottom: 2px;">Icon:</label>
+            <input type="range" id="logo-switcher" min="0" max="1" step="1" value="0" style="width: 60px;">
+            <div style="display: flex; justify-content: space-between; width: 60px; margin-top: 2px;">
+                <img src="icons/coffee-cup.png" alt="Coffee Cup" style="width: 22px; height: 22px;">
+                <img src="icons/coffee.png" alt="Coffee" style="width: 22px; height: 22px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements Dropdown -->
+    <details id="achievements-dropdown">
+        <summary>Achievements</summary>
+        <ul id="achievements-list"></ul>
+    </details>
+
+    <!-- Achievement Popup -->
+    <div id="achievement-popup"></div>
+
+    <!-- Random Coffee Bonus Event -->
+    <div id="bonus-coffee" style="display:none; position:fixed; font-size:2.5em; z-index:99999; cursor:pointer; user-select:none;">
+        <img id="bonus-coffee-img" src="icons/coffee-beans.png" alt="Bonus Coffee Beans" style="width: 1em; height: 1em; display: block; pointer-events: none; margin: 0 auto;" />
+    </div>
+
+    <script src="main_page.js"></script>
+    <style>
+    .floating-plus {
+        position: absolute;
+        pointer-events: none;
+        color: #b48e53;
+        font-size: 1.5em;
+        font-weight: bold;
+        opacity: 1;
+        animation: floatPlus 1s ease-out forwards;
+        z-index: 100;
+    }
+    @keyframes floatPlus {
+        0% { opacity: 1; transform: translateY(0) scale(1); }
+        80% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+    }
+    </style>
 </body>
+
 </html>
