@@ -572,6 +572,7 @@ function spawnBonusCoffee() {
     if (bonusCoffeeActive) return;
     bonusCoffeeActive = true;
     const bonus = document.getElementById('bonus-coffee');
+    const light = document.getElementById('bonus-coffee-light');
     // Random position (10% to 80% of viewport)
     const x = Math.random() * 70 + 10;
     const y = Math.random() * 60 + 10;
@@ -579,6 +580,17 @@ function spawnBonusCoffee() {
     bonus.style.top = y + 'vh';
     bonus.style.display = 'block';
     bonus.style.fontSize = '5em'; // Make it larger
+    // Wait for the bonus image to render, then center the light
+    setTimeout(() => {
+        const bonusRect = bonus.getBoundingClientRect();
+        const lightSize = 8 * parseFloat(getComputedStyle(document.documentElement).fontSize); // 8em in px
+        // Center the light behind the bean
+        light.style.width = lightSize + 'px';
+        light.style.height = lightSize + 'px';
+        light.style.left = (bonusRect.left + window.scrollX + bonusRect.width / 2 - lightSize / 2) + 'px';
+        light.style.top = (bonusRect.top + window.scrollY + bonusRect.height / 2 - lightSize / 2) + 'px';
+        light.style.display = 'block';
+    }, 10);
     // Ensure the image is visible and sized
     const img = document.getElementById('bonus-coffee-img');
     if (img) {
@@ -593,6 +605,7 @@ function spawnBonusCoffee() {
     // Remove after 8 seconds if not clicked
     bonusTimeout = setTimeout(() => {
         bonus.style.display = 'none';
+        light.style.display = 'none';
         bonusCoffeeActive = false;
     }, 8000);
 }
@@ -616,8 +629,10 @@ document.getElementById('bonus-coffee').addEventListener('click', function() {
     floating.style.fontWeight = 'bold';
     bonus.appendChild(floating);
     setTimeout(() => floating.remove(), 1500);
-    // Hide bonus coffee
+    // Hide bonus coffee and light effect
     bonus.style.display = 'none';
+    const light = document.getElementById('bonus-coffee-light');
+    if (light) light.style.display = 'none';
     bonusCoffeeActive = false;
     if (bonusTimeout) clearTimeout(bonusTimeout);
 
