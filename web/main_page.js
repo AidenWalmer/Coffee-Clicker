@@ -11,6 +11,7 @@ document.getElementById('restart-game').addEventListener('click', () => {
         window.bonusCoffeeClicks = 0;
         window.firstSell = false;
         upgrades.forEach(u => { u.owned = 0; u.cost = u.baseCost; });
+        shopUpgrades.forEach(u => { u.owned = 0; u.cost = u.baseCost; });
         if (typeof unlockedAchievements !== 'undefined') unlockedAchievements = new Set();
         updateCPS();
         updateDisplay();
@@ -143,6 +144,14 @@ function loadGame() {
                 }
             });
         }
+        if (saved.shopUpgrades) {
+            shopUpgrades.forEach((u, i) => {
+                if (saved.shopUpgrades[i]) {
+                    u.owned = saved.shopUpgrades[i].owned || 0;
+                    u.cost = saved.shopUpgrades[i].cost || u.baseCost;
+                }
+            });
+        }
     }
 }
 
@@ -151,6 +160,7 @@ function saveGame() {
         coffeeCount,
         coffeesPerSecond,
         upgrades,
+        shopUpgrades,
         totalClicks,
         totalCoffeesCollected
     }));
@@ -254,8 +264,8 @@ function buyShopUpgrade(index) {
             for (let i = 0; i < maxAmount; i++) {
                 if (coffeeCount >= totalCost + tempCost) {
                     totalCost += tempCost;
+                    tempCost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned + canBuy + 1));
                     canBuy++;
-                    tempCost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned + canBuy));
                 } else {
                     break;
                 }
