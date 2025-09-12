@@ -11,10 +11,17 @@ document.getElementById('restart-game').addEventListener('click', () => {
         window.bonusCoffeeClicks = 0;
         window.firstSell = false;
         upgrades.forEach(u => { u.owned = 0; u.cost = u.baseCost; });
+        shopUpgrades.forEach(u => { u.owned = 0; u.cost = u.baseCost; });
         if (typeof unlockedAchievements !== 'undefined') unlockedAchievements = new Set();
         updateCPS();
         updateDisplay();
         saveGame();
+        // Reset shop buy amount button to 1x on restart
+        setTimeout(() => {
+            document.querySelectorAll('.shop-buy-amount-btn').forEach(b => b.classList.remove('active'));
+            const shopBtn = document.querySelector('.shop-buy-amount-btn[data-amount="1"]');
+            if (shopBtn) shopBtn.classList.add('active');
+        }, 0);
     }
 });
 // --- Coffee Clicker with Upgrades and Autoclickers ---
@@ -22,6 +29,9 @@ document.getElementById('restart-game').addEventListener('click', () => {
 // Game state
 let coffeeCount = 0;
 let coffeesPerSecond = 0;
+let clickCPSBonus = 0;
+let clickCPSClicks = 0;
+let clickCPSLastUpdate = Date.now();
 let clickPower = 1;
 let totalClicks = 0;
 let totalCoffeesCollected = 0;
@@ -65,8 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
             renderUpgrades();
         });
     });
-    // Set default active
+    // Set default active for upgrades
     document.querySelector('.buy-amount-btn[data-amount="1"]').classList.add('active');
+    // Set default active for shop
+    const shopBtn = document.querySelector('.shop-buy-amount-btn[data-amount="1"]');
+    if (shopBtn) shopBtn.classList.add('active');
 
     document.getElementById('buy-mode').addEventListener('click', function () {
         buyMode = 'buy';
@@ -121,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (brewBtn) {
         brewBtn.addEventListener('click', clickBrewButton);
         // Add hover tip to coffee clicker button
-        brewBtn.addEventListener('mouseenter', function() {
+        brewBtn.addEventListener('mouseenter', function () {
             brewBtn.title = `Total Coffees Collected: ${totalCoffeesCollected}`;
         });
     }
@@ -143,6 +156,14 @@ function loadGame() {
                 }
             });
         }
+        if (saved.shopUpgrades) {
+            shopUpgrades.forEach((u, i) => {
+                if (saved.shopUpgrades[i]) {
+                    u.owned = saved.shopUpgrades[i].owned || 0;
+                    u.cost = saved.shopUpgrades[i].cost || u.baseCost;
+                }
+            });
+        }
     }
 }
 
@@ -151,6 +172,7 @@ function saveGame() {
         coffeeCount,
         coffeesPerSecond,
         upgrades,
+        shopUpgrades,
         totalClicks,
         totalCoffeesCollected
     }));
@@ -201,8 +223,11 @@ function clickBrewButton(e) {
     coffeeCount += power;
     totalCoffeesCollected += power;
     totalClicks++;
-    // Dynamically update CPS with each manual click
-    coffeesPerSecond = upgrades.reduce((sum, u) => sum + u.owned * u.cps, 0) + (typeof manualClicksPerSecond === 'number' ? manualClicksPerSecond : 0);
+
+    // Count this click for CPS bonus
+    clickCPSClicks++;
+    clickCPSLastUpdate = Date.now();
+    updateCPS();
     updateDisplay();
     saveGame();
     showFloatingPlus(e, power);
@@ -254,8 +279,8 @@ function buyShopUpgrade(index) {
             for (let i = 0; i < maxAmount; i++) {
                 if (coffeeCount >= totalCost + tempCost) {
                     totalCost += tempCost;
+                    tempCost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned + canBuy + 1));
                     canBuy++;
-                    tempCost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned + canBuy));
                 } else {
                     break;
                 }
@@ -401,7 +426,8 @@ function buyUpgrade(index) {
 }
 
 function updateCPS() {
-    coffeesPerSecond = upgrades.reduce((sum, u) => sum + u.owned * u.cps, 0);
+    const baseCPS = upgrades.reduce((sum, u) => sum + u.owned * u.cps, 0);
+    coffeesPerSecond = baseCPS + clickCPSBonus;
 }
 
 function renderUpgrades() {
@@ -471,7 +497,7 @@ const achievements = [
     { id: 'first-click', condition: () => coffeeCount >= 1, message: 'Achievement: First Click!' },
     { id: 'hundred-clicks', condition: () => totalClicks >= 100, message: 'Achievement: 100 Clicks!' },
     { id: 'thousand-clicks', condition: () => totalClicks >= 1000, message: 'Achievement: 1,000 Clicks!' },
-    { id: 'ten-thousand-clicks', condition: () => totalClicks >= 10000, message: 'Achievement: 10,000 Clicks!' },
+    { id: 'five-thousand-clicks', condition: () => totalClicks >= 5000, message: 'Achievement: 5,000 Clicks!' },
     { id: 'first-sell', condition: () => window.firstSell, message: 'Achievement: First Sale! (Sold a Shop Item or Upgrade)' },
     { id: 'hundred-coffees', condition: () => coffeeCount >= 100, message: 'Achievement: 100 Coffees!' },
     { id: 'thousand-coffees', condition: () => coffeeCount >= 1000, message: 'Achievement: 1,000 Coffees!' },
@@ -491,11 +517,13 @@ const achievements = [
     { id: 'all-upgrades', condition: () => upgrades.every(u => u.owned >= 1), message: 'Achievement: Purchase one of Every Upgrade!' },
     { id: 'all-shop-items', condition: () => shopUpgrades.every(u => u.owned >= 1), message: 'Achievement: Purchase one of Every Shop Item!' },
     { id: 'all-items', condition: () => upgrades.every(u => u.owned >= 1) && shopUpgrades.every(u => u.owned >= 1), message: 'Achievement: I\'ll Have One of Everything! (All Upgrades & Shop Items)' },
-    { id: 'completionist', condition: () => {
-        // Exclude this achievement itself from the check
-        const otherAchievements = achievements.filter(a => a.id !== 'completionist');
-        return otherAchievements.every(a => unlockedAchievements.has(a.id));
-    }, message: 'Achievement: The Coffee Completionist (All Achievements Unlocked!)' },
+    {
+        id: 'completionist', condition: () => {
+            // Exclude this achievement itself from the check
+            const otherAchievements = achievements.filter(a => a.id !== 'completionist');
+            return otherAchievements.every(a => unlockedAchievements.has(a.id));
+        }, message: 'Achievement: The Coffee Completionist (All Achievements Unlocked!)'
+    },
     // First of any upgrade
     ...upgrades.map((u, i) => ({ id: `first-upgrade-${i}`, condition: () => u.owned >= 1, message: `Achievement: First ${u.name}!` })),
     // First of any shop item
@@ -565,13 +593,11 @@ function checkAchievements() {
 let bonusCoffeeActive = false;
 let bonusTimeout = null;
 
-// Add sound for bonus event
-const bonusAudio = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfae3e2.mp3'); // Free chime sound
-
 function spawnBonusCoffee() {
     if (bonusCoffeeActive) return;
     bonusCoffeeActive = true;
     const bonus = document.getElementById('bonus-coffee');
+    const light = document.getElementById('bonus-coffee-light');
     // Random position (10% to 80% of viewport)
     const x = Math.random() * 70 + 10;
     const y = Math.random() * 60 + 10;
@@ -579,6 +605,17 @@ function spawnBonusCoffee() {
     bonus.style.top = y + 'vh';
     bonus.style.display = 'block';
     bonus.style.fontSize = '5em'; // Make it larger
+    // Wait for the bonus image to render, then center the light
+    setTimeout(() => {
+        const bonusRect = bonus.getBoundingClientRect();
+        const lightSize = 8 * parseFloat(getComputedStyle(document.documentElement).fontSize); // 8em in px
+        // Center the light behind the bean
+        light.style.width = lightSize + 'px';
+        light.style.height = lightSize + 'px';
+        light.style.left = (bonusRect.left + window.scrollX + bonusRect.width / 2 - lightSize / 2) + 'px';
+        light.style.top = (bonusRect.top + window.scrollY + bonusRect.height / 2 - lightSize / 2) + 'px';
+        light.style.display = 'block';
+    }, 10);
     // Ensure the image is visible and sized
     const img = document.getElementById('bonus-coffee-img');
     if (img) {
@@ -588,36 +625,52 @@ function spawnBonusCoffee() {
         img.style.pointerEvents = 'none';
         img.style.margin = '0 auto';
     }
-    bonusAudio.currentTime = 0;
-    bonusAudio.play();
+
     // Remove after 8 seconds if not clicked
     bonusTimeout = setTimeout(() => {
         bonus.style.display = 'none';
+        light.style.display = 'none';
         bonusCoffeeActive = false;
     }, 8000);
 }
 
-document.getElementById('bonus-coffee').addEventListener('click', function() {
+document.getElementById('bonus-coffee').addEventListener('click', function(event) {
     if (!bonusCoffeeActive) return;
     // Award 25% of current coffeeCount (rounded down, at least 1)
     const bonusAmount = Math.max(1, Math.floor(coffeeCount * 0.25));
     coffeeCount += bonusAmount;
     updateDisplay();
     saveGame();
-    // Show floating bonus text
     const bonus = document.getElementById('bonus-coffee');
     const floating = document.createElement('span');
-    floating.textContent = `+${bonusAmount}`;
-    floating.style.position = 'absolute';
-    floating.style.left = '0';
-    floating.style.top = '-1.5em';
-    floating.style.fontSize = '2em';
-    floating.style.color = '#4caf50';
-    floating.style.fontWeight = 'bold';
-    bonus.appendChild(floating);
     setTimeout(() => floating.remove(), 1500);
-    // Hide bonus coffee
+    // Show white floating text at click position
+    if (event && typeof event.clientX === 'number' && typeof event.clientY === 'number') {
+        const whiteFloating = document.createElement('span');
+        whiteFloating.textContent = `+${bonusAmount} coffees!`;
+        whiteFloating.style.position = 'fixed';
+        whiteFloating.style.left = event.clientX + 'px';
+        whiteFloating.style.top = event.clientY + 'px';
+        whiteFloating.style.fontSize = '1.7em';
+        whiteFloating.style.color = '#ffffffff';
+        whiteFloating.style.fontWeight = 'bold';
+        whiteFloating.style.textShadow = '0 0 4px #000, 0 0 8px #000';
+        whiteFloating.style.opacity = '1';
+        whiteFloating.style.transition = 'opacity 1.2s';
+        whiteFloating.style.pointerEvents = 'none';
+        whiteFloating.style.zIndex = 9999;
+        document.body.appendChild(whiteFloating);
+        setTimeout(() => {
+            whiteFloating.style.opacity = '0';
+        }, 2000); // Show for 2 seconds before fading
+        setTimeout(() => {
+            whiteFloating.remove();
+        }, 3200); // Fade duration (1.2s) + visible (2s)
+    }
+    // Hide bonus coffee and light effect
     bonus.style.display = 'none';
+    const light = document.getElementById('bonus-coffee-light');
+    if (light) light.style.display = 'none';
     bonusCoffeeActive = false;
     if (bonusTimeout) clearTimeout(bonusTimeout);
 
@@ -635,6 +688,22 @@ setInterval(() => {
 }, 60000);
 
 // Autoclicker loop
+
+// Update clickCPSBonus every second based on clicks in the last second
+setInterval(() => {
+    // Calculate bonus: clicks per second * click power
+    const now = Date.now();
+    if (now - clickCPSLastUpdate > 1200) {
+        // If no clicks in the last 1.2s, reset bonus
+        clickCPSBonus = 0;
+        clickCPSClicks = 0;
+    } else {
+        clickCPSBonus = clickCPSClicks * getClickPower();
+    }
+    updateCPS();
+    clickCPSClicks = 0;
+}, 1000);
+
 setInterval(() => {
     coffeeCount += coffeesPerSecond;
     updateDisplay();
