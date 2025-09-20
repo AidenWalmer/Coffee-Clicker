@@ -702,7 +702,7 @@ setInterval(() => {
     if (!bonusCoffeeActive) {
         spawnBonusCoffee();
     }
-}, 6000);
+}, 60000);
 
 // Autoclicker loop
 
