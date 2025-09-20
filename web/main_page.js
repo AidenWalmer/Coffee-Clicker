@@ -600,7 +600,8 @@ function spawnBonusCoffee() {
     if (bonusCoffeeActive) return;
     bonusCoffeeActive = true;
     const bonus = document.getElementById('bonus-coffee');
-    const light = document.getElementById('bonus-coffee-light');
+    // Remove all code related to the light effect
+    // const light = document.getElementById('bonus-coffee-light');
     // Random position (10% to 80% of viewport)
     const x = Math.random() * 70 + 10;
     const y = Math.random() * 60 + 10;
@@ -608,31 +609,41 @@ function spawnBonusCoffee() {
     bonus.style.top = y + 'vh';
     bonus.style.display = 'block';
     bonus.style.fontSize = '5em'; // Make it larger
-    // Wait for the bonus image to render, then center the light
-    setTimeout(() => {
-        const bonusRect = bonus.getBoundingClientRect();
-        const lightSize = 8 * parseFloat(getComputedStyle(document.documentElement).fontSize); // 8em in px
-        // Center the light behind the bean
-        light.style.width = lightSize + 'px';
-        light.style.height = lightSize + 'px';
-        light.style.left = (bonusRect.left + window.scrollX + bonusRect.width / 2 - lightSize / 2) + 'px';
-        light.style.top = (bonusRect.top + window.scrollY + bonusRect.height / 2 - lightSize / 2) + 'px';
-        light.style.display = 'block';
-    }, 10);
+
+    // Remove light positioning and z-index logic
+    // bonus.style.position = 'fixed';
+    // bonus.style.zIndex = 99999;
+    // light.style.position = 'fixed';
+    // light.style.zIndex = 99998;
+
+    // Remove setTimeout for light positioning
+    // setTimeout(() => {
+    //     const bonusRect = bonus.getBoundingClientRect();
+    //     const lightSize = 8 * parseFloat(getComputedStyle(document.documentElement).fontSize); // 8em in px
+    //     light.style.width = lightSize + 'px';
+    //     light.style.height = lightSize + 'px';
+    //     light.style.left = (bonusRect.left + window.scrollX + bonusRect.width / 2 - lightSize / 2) + 'px';
+    //     light.style.top = (bonusRect.top + window.scrollY + bonusRect.height / 2 - lightSize / 2) + 'px';
+    //     light.style.display = 'block';
+    //     light.style.pointerEvents = 'none';
+    // }, 10);
+
     // Ensure the image is visible and sized
     const img = document.getElementById('bonus-coffee-img');
     if (img) {
         img.style.width = '1em';
         img.style.height = '1em';
         img.style.display = 'block';
-        img.style.pointerEvents = 'none';
+        img.style.pointerEvents = 'auto';
         img.style.margin = '0 auto';
+        img.classList.add('pulsate');
     }
 
     // Remove after 8 seconds if not clicked
     bonusTimeout = setTimeout(() => {
         bonus.style.display = 'none';
-        light.style.display = 'none';
+        // if (light) light.style.display = 'none';
+        if (img) img.classList.remove('pulsate');
         bonusCoffeeActive = false;
     }, 8000);
 }
@@ -665,15 +676,18 @@ document.getElementById('bonus-coffee').addEventListener('click', function(event
         document.body.appendChild(whiteFloating);
         setTimeout(() => {
             whiteFloating.style.opacity = '0';
-        }, 2000); // Show for 2 seconds before fading
+        }, 1500); // Show for 1.5 seconds before fading
         setTimeout(() => {
             whiteFloating.remove();
-        }, 3200); // Fade duration (1.2s) + visible (2s)
+        }, 2700); // Fade duration (1.2s) + visible (1.5s)
     }
     // Hide bonus coffee and light effect
     bonus.style.display = 'none';
-    const light = document.getElementById('bonus-coffee-light');
-    if (light) light.style.display = 'none';
+    // Remove light effect hide
+    // const light = document.getElementById('bonus-coffee-light');
+    // if (light) light.style.display = 'none';
+    const img = document.getElementById('bonus-coffee-img');
+    if (img) img.classList.remove('pulsate');
     bonusCoffeeActive = false;
     if (bonusTimeout) clearTimeout(bonusTimeout);
 
@@ -688,7 +702,7 @@ setInterval(() => {
     if (!bonusCoffeeActive) {
         spawnBonusCoffee();
     }
-}, 60000);
+}, 6000);
 
 // Autoclicker loop
 
