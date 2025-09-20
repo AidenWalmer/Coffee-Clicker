@@ -28,7 +28,9 @@ document.getElementById('restart-game').addEventListener('click', () => {
 
 // Game state
 let coffeeCount = 0;
-let coffeesPerSecond = 0;
+let coffeesPerSecond = 0; // total (auto + click)
+let autoCoffeesPerSecond = 0; // from upgrades only
+let clickCoffeesPerSecond = 0; // from clicking only
 let clickCPSBonus = 0;
 let clickCPSClicks = 0;
 let clickCPSLastUpdate = Date.now();
@@ -426,8 +428,9 @@ function buyUpgrade(index) {
 }
 
 function updateCPS() {
-    const baseCPS = upgrades.reduce((sum, u) => sum + u.owned * u.cps, 0);
-    coffeesPerSecond = baseCPS + clickCPSBonus;
+    autoCoffeesPerSecond = upgrades.reduce((sum, u) => sum + u.owned * u.cps, 0);
+    clickCoffeesPerSecond = clickCPSBonus;
+    coffeesPerSecond = autoCoffeesPerSecond + clickCoffeesPerSecond;
 }
 
 function renderUpgrades() {
@@ -705,7 +708,8 @@ setInterval(() => {
 }, 1000);
 
 setInterval(() => {
-    coffeeCount += coffeesPerSecond;
+    // Only add autoCoffeesPerSecond (from upgrades) as passive income
+    coffeeCount += autoCoffeesPerSecond;
     updateDisplay();
     saveGame();
 }, 1000);
